@@ -7,7 +7,7 @@
       <mat-form-field>
 
         <input matInput type="email" name="email"
-               [ngModel]="val.email"
+               ngModel
                #email="ngModel" required minlength="3" maxlenght="20"
                email
                placeholder="Email">
@@ -24,16 +24,22 @@
       <mat-form-field>
 
         <input matInput type="password" name="password"
-               [ngModel]="val.password" #password="ngModel" required
-               passwordStrength
+               ngModel #password="ngModel" required
+               passwordStrength minlength="8"
                placeholder="Password">
 
         <mat-error *ngIf="password?.errors?.required">The password is mandatory</mat-error>
-        <mat-error *ngIf="password?.errors?.passwordStrength">
-          Your password must have lower case, upper case and numeric characters
-        </mat-error>
 
       </mat-form-field>
+      <ng-container *ngIf="password.errors | onlyOneError:['minlength', 'passwordStrength'] as error">
+        <div class="field-message" *ngIf="error.minlength">
+          your password must have minlength {{ error.minlength.requiredLength}} chars,
+          but it only has {{error.minlength.actualLength}}
+        </div>
+        <div class="field-message" *ngIf="error.passwordStrength">
+          Your password must have lower case, upper case and numeric characters
+        </div>
+      </ng-container>
 
       <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">
         Login
@@ -42,7 +48,7 @@
     </form>
 
     <div class="form-val">
-      {{  loginForm.value | json }}
+      {{  password.errors | json }}
     </div>
 
   </mat-card-content>

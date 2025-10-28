@@ -24,7 +24,8 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/global-styles.scss"
             ],
             "scripts": [],
             "extractLicenses": false,
