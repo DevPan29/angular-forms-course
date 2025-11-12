@@ -1,2 +1,14 @@
+<!-- usually when we need to implement a custom upload button we use a input type=file hidden
+ because is very hard to give it a custom style-->
+<input type="file" class="file-input" #fileUpload
+(change)="onFileSelected($event)">
 
-
+<div class="file-upload">
+  <mat-form-field>
+    <input matInput [disabled]="true"  type="text" [value]="fileName">
+  </mat-form-field>
+  <button mat-mini-fab color="primary" class="upload-btn"
+  (click)="fileUpload.click()">
+    <mat-icon>attach_file</mat-icon>
+  </button>
+</div>
