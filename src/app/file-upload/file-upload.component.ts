@@ -12,7 +12,7 @@ import {onFileupload} from "../../../server/file-upload.route";
     styleUrls: ["file-upload.component.scss"],
     standalone: false
 })
-export class FileUploadComponent {
+export class FileUploadComponent implements ControlValueAccessor {
 
   @Input()
   requiredFileType: string;
@@ -20,9 +20,32 @@ export class FileUploadComponent {
   fileName: string = '';
 
   fileUploadError = false;
+  uploadProgress: number;
+
+  onChange = (filename: string) => {}
+  onTouched = () => {}
+  disabled: boolean = false;
 
   constructor(private http: HttpClient) {
 
+  }
+
+  writeValue(value: any): void {
+      this.fileName = value;
+  }
+  registerOnChange(fn: any): void {
+      this.onChange = fn;
+  }
+  registerOnTouched(fn: any): void {
+      this.onTouched = fn;
+  }
+  setDisabledState?(isDisabled: boolean): void {
+      this.disabled = isDisabled;
+  }
+
+  onClick(fileUpload: HTMLInputElement): void {
+    this.onTouched();
+    fileUpload.click();
   }
 
   onFileSelected(event) {
@@ -37,14 +60,27 @@ export class FileUploadComponent {
 
       this.fileUploadError = false;
 
-      this.http.post("/api/thumbnail-upload", formData)
+      this.http.post("/api/thumbnail-upload", formData, {
+        reportProgress: true,
+        observe: 'events'
+      })
         .pipe(
           catchError(error => {
             this.fileUploadError = true;
             return of(error);
+          }),
+          finalize(() => {
+            this.uploadProgress = null;
           })
         )
-        .subscribe()
+        .subscribe(event => {
+          if (event.type == HttpEventType.UploadProgress) {
+            this.uploadProgress = Math.round(100 * (event.loaded / event.total));
+          }
+          else if (event.type == HttpEventType.Response) {
+            this.onChange(this.fileName);
+          }
+        })
     }
   }
 }
