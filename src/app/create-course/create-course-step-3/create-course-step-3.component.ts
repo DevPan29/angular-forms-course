@@ -10,5 +10,10 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class CreateCourseStep3Component {
 
+  form: FormGroup = this.fb.group({});
+
+  constructor(private fb: FormBuilder) {
+
+  }
 
 }
