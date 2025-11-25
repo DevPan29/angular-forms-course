@@ -2,9 +2,9 @@
 <div class="create-course-panel data-form">
 
   <h2 class="title">Create New Course</h2>
-
+<!-- with linear true the user have to fill the steps sequentially  -->
   <mat-horizontal-stepper
-    [linear]="false"
+    [linear]="true"
     class="mat-elevation-z5" labelPosition="bottom">
 <!-- stepControl is used to enable the next button of specific step only if the related form is valid  -->
 
@@ -39,7 +39,8 @@
       <div class="stepper-buttons">
         <button mat-raised-button color="primary" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" matStepperNext
-        [disabled]="!step3.form.valid">Create Course</button>
+        [disabled]="!step3.form.valid || step3.lessons.length == 0"
+        (click)="submit(step1.form.value, step2.form.value, step3.form.value)">Create Course</button>
       </div>
 
     </mat-step>

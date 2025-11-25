@@ -3,17 +3,37 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
 @Component({
-    selector: 'create-course-step-3',
-    templateUrl: 'create-course-step-3.component.html',
-    styleUrls: ['create-course-step-3.component.scss'],
-    standalone: false
+  selector: 'create-course-step-3',
+  templateUrl: 'create-course-step-3.component.html',
+  styleUrls: ['create-course-step-3.component.scss'],
+  standalone: false
 })
 export class CreateCourseStep3Component {
 
-  form: FormGroup = this.fb.group({});
+  form = this.fb.group({
+    lessons: this.fb.array([])
+  });
 
-  constructor(private fb: FormBuilder) {
+
+  constructor(private fb:FormBuilder) {
 
   }
 
+  get lessons(): FormArray<FormGroup> {
+    return this.form.get('lessons') as FormArray<FormGroup>;
+  }
+
+  addLesson() {
+
+    const lessonForm = this.fb.group({
+      title: ['', Validators.required],
+      level: ['beginner', Validators.required]
+    });
+
+    this.lessons.push(lessonForm);
+  }
+
+  deleteLesson(lessonIndex: number) {
+    this.lessons.removeAt(lessonIndex);
+  }
 }
